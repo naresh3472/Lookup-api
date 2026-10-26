@@ -1,5 +1,6 @@
-from flask import Flask, jsonify, request, render_template_string
+from flask import Flask, jsonify, request, Response
 import requests
+import json
 
 app = Flask(__name__)
 
@@ -47,7 +48,8 @@ def home():
                     </a>
                 </div>
                 <div class="footer">
-                    👨‍💻 Developer : <b>Wolf OSINT ❤️</b>
+                    👨‍💻 Developer : <b>Wolf OSINT ❤️</b><br>
+                    📢 Channel : <a href="https://t.me/+Xrok4xEFCHc5N2M1" style="color: #58a6ff;">https://t.me/priyanshuexploits</a>
                 </div>
             </div>
         </body>
@@ -63,7 +65,7 @@ def lookup_all():
 
     results = {}
 
-    # 1. IFSC API Lookup & Formatting
+    # 1. IFSC Lookup
     if ifsc_code:
         try:
             url = f"{IFSC_API_BASE}{ifsc_code}?format=text"
@@ -71,36 +73,38 @@ def lookup_all():
             if res.status_code == 200:
                 results['ifsc'] = {
                     "status": "success",
-                    "data": res.text
+                    "data": res.text,
+                    "developer": "Wolf OSINT ❤️",
+                    "telegram": "https://t.me/+Xrok4xEFCHc5N2M1"
                 }
             else:
-                results['ifsc'] = {"status": "failed", "message": "Invalid IFSC or API down"}
+                results['ifsc'] = {"status": "failed", "message": "Invalid IFSC"}
         except Exception as e:
             results['ifsc'] = {"status": "error", "message": str(e)}
 
-    # 2. Aadhaar API Lookup & Formatting
+    # 2. Aadhaar Lookup
     if aadhaar_num:
         try:
             params = {"id": aadhaar_num, "format": "card"}
             res = requests.get(AADHAAR_API_BASE, params=params, timeout=15)
             if res.status_code == 200:
-                # Try parsing JSON or text response
                 try:
                     data = res.json()
                 except Exception:
                     data = res.text
-                
                 results['aadhaar'] = {
                     "status": "success",
                     "data": data,
-                    "note": "[Aadhaar Redacted for privacy]"
+                    "note": "[Aadhaar Redacted for privacy]",
+                    "developer": "Wolf OSINT ❤️",
+                    "telegram": "https://t.me/+Xrok4xEFCHc5N2M1"
                 }
             else:
                 results['aadhaar'] = {"status": "failed", "message": "Aadhaar fetch failed"}
         except Exception as e:
             results['aadhaar'] = {"status": "error", "message": str(e)}
 
-    # 3. Vehicle API Lookup & Formatting
+    # 3. Vehicle Lookup
     if vehicle_num:
         try:
             params = {"api": "ultra_vehicle", "key": "demo", "xr": vehicle_num}
@@ -110,17 +114,20 @@ def lookup_all():
                     raw_data = res.json()
                 except Exception:
                     raw_data = res.text
-
                 results['vehicle'] = {
                     "status": "success",
-                    "data": raw_data
+                    "data": raw_data,
+                    "developer": "Wolf OSINT ❤️",
+                    "telegram": "https://t.me/+Xrok4xEFCHc5N2M1"
                 }
             else:
                 results['vehicle'] = {"status": "failed", "message": "Vehicle API failed"}
         except Exception as e:
             results['vehicle'] = {"status": "error", "message": str(e)}
 
-    return jsonify(results)
+    # Proper indentation to render clean JSON output without messy \n blocks
+    formatted_json = json.dumps(results, indent=4, ensure_ascii=False)
+    return Response(formatted_json, mimetype='application/json')
 
 @app.errorhandler(404)
 def not_found(e):
@@ -128,5 +135,7 @@ def not_found(e):
         "status": "error",
         "code": 404,
         "message": "The requested URL was not found on the server.",
-        "brand": "WOLF OSINT"
+        "brand": "WOLF OSINT",
+        "developer": "Priyanshu Gupta ❤️",
+        "telegram": "https://t.me/priyanshuexploits"
     }), 404
