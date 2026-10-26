@@ -15,7 +15,6 @@ def home():
         <head>
             <title>WOLF OSINT DASHBOARD</title>
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <!-- FontAwesome for Social Media Icons -->
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
             <style>
                 body { background-color: #0d1117; color: #c9d1d9; font-family: 'Courier New', monospace; padding: 20px; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
