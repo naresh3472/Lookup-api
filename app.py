@@ -1,47 +1,97 @@
 from flask import Flask, jsonify, request, render_template_string
+import requests
 
 app = Flask(__name__)
 
-# UI Dashboard Route (Search options removed)
+# Base API URLs
+IFSC_API_BASE = "https://priyanshuexploits.vercel.app/api/ifsc/"
+AADHAAR_API_BASE = "https://aadhar-xi.vercel.app/api/lookup"
+VEHICLE_API_BASE = "https://api.sarkariallupdates.com/api"
+
 @app.route('/', methods=['GET'])
 def home():
-    html_template = """
+    return render_template_string("""
     <html>
-        <head>
-            <title>WOLF OSINT DASHBOARD</title>
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <style>
-                body { background-color: #0d1117; color: #c9d1d9; font-family: 'Courier New', monospace; padding: 20px; margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
-                .container { max-width: 600px; width: 100%; background: #161b22; padding: 25px; border-radius: 12px; border: 1px solid #30363d; box-shadow: 0 8px 24px rgba(0,0,0,0.6); text-align: center; }
-                h2 { color: #58a6ff; text-shadow: 0 0 10px rgba(88,166,255,0.4); }
-                .status-box { margin-top: 20px; background: #0d1117; padding: 15px; border-radius: 8px; border: 1px solid #30363d; color: #58a6ff; }
-                .footer { text-align: center; margin-top: 20px; font-size: 13px; color: #8b949e; }
-                a { color: #58a6ff; text-decoration: none; }
-            </style>
-        </head>
-        <body>
-            <div class="container">
-                <h2>🐺 WOLF OSINT DASHBOARD 🐺</h2>
-                <div class="status-box">
-                    <p>Status: <b>Active & Running ✅</b></p>
-                    <p>Search options have been successfully removed.</p>
-                </div>
-                <div class="footer">
-                    👨‍💻 Developer : Wolf OSINT ❤️ | 📢 <a href="https://t.me/+Xrok4xEFCHc5N2M1" target="_blank">Telegram Channel</a>
-                </div>
-            </div>
+        <head><title>WOLF OSINT API</title></head>
+        <body style="background:#0d1117;color:#58a6ff;font-family:monospace;padding:30px;">
+            <h2>🐺 WOLF OSINT API RUNNING 🐺</h2>
+            <p>Use endpoints like: <br>
+            /api/lookup?ifsc=SBIN0000794<br>
+            /api/lookup?aadhaar=123412341234<br>
+            /api/lookup?vehicle=HR55AL0051</p>
         </body>
     </html>
-    """
-    return render_template_string(html_template)
+    """)
 
-# Custom 404 Error Handler
+@app.route('/api/lookup', methods=['GET'])
+def lookup_all():
+    ifsc_code = request.args.get('ifsc')
+    aadhaar_num = request.args.get('aadhaar')
+    vehicle_num = request.args.get('vehicle')
+
+    results = {}
+
+    # 1. IFSC API Call
+    if ifsc_code:
+        try:
+            url = f"{IFSC_API_BASE}{ifsc_code}?format=text"
+            res = requests.get(url, timeout=10)
+            results['ifsc'] = {
+                "status": "success" if res.status_code == 200 else "failed",
+                "data": res.text
+            }
+        except Exception as e:
+            results['ifsc'] = {"status": "error", "message": str(e)}
+
+    # 2. Aadhaar API Call
+    if aadhaar_num:
+        try:
+            params = {
+                "id": aadhaar_num,
+                "format": "card"
+            }
+            res = requests.get(AADHAAR_API_BASE, params=params, timeout=15)
+            try:
+                data = res.json()
+            except Exception:
+                data = res.text
+
+            results['aadhaar'] = {
+                "status": "success" if res.status_code == 200 else "failed",
+                "data": data,
+                "note": "[Aadhaar Redacted for privacy]"
+            }
+        except Exception as e:
+            results['aadhaar'] = {"status": "error", "message": str(e)}
+
+    # 3. Vehicle API Call (Fixed parameters)
+    if vehicle_num:
+        try:
+            params = {
+                "api": "ultra_vehicle",
+                "key": "demo",
+                "xr": vehicle_num
+            }
+            res = requests.get(VEHICLE_API_BASE, params=params, timeout=15)
+            try:
+                data = res.json()
+            except Exception:
+                data = res.text
+
+            results['vehicle'] = {
+                "status": "success" if res.status_code == 200 else "failed",
+                "data": data
+            }
+        except Exception as e:
+            results['vehicle'] = {"status": "error", "message": str(e)}
+
+    return jsonify(results)
+
 @app.errorhandler(404)
 def not_found(e):
-    return render_template_string("""
-    <html><body style="background:#0d1117;color:#ff7b72;font-family:monospace;padding:40px;text-align:center;">
-    <h2>🐺 WOLF OSINT - 404 ERROR 🐺</h2>
-    <p>The requested URL was not found on the server.</p>
-    <a href="/" style="color:#58a6ff;">Go back to Home</a>
-    </body></html>
-    """), 404
+    return jsonify({
+        "status": "error",
+        "code": 404,
+        "message": "The requested URL was not found on the server.",
+        "brand": "WOLF OSINT"
+    }), 404
