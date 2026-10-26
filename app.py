@@ -22,9 +22,6 @@ def home():
                 .container { max-width: 650px; width: 100%; background: #161b22; padding: 25px; border-radius: 12px; border: 1px solid #30363d; box-shadow: 0 8px 24px rgba(0,0,0,0.6); text-align: center; }
                 h2 { color: #58a6ff; text-shadow: 0 0 10px rgba(88,166,255,0.4); margin-bottom: 20px; }
                 .status-box { background: #0d1117; padding: 15px; border-radius: 8px; border: 1px solid #30363d; color: #58a6ff; text-align: left; margin-bottom: 20px; font-size: 14px; line-height: 1.6; }
-                .endpoints { background: #0d1117; padding: 15px; border-radius: 8px; border: 1px solid #30363d; text-align: left; margin-bottom: 20px; font-size: 13px; color: #8b949e; word-break: break-all; }
-                .endpoints a { color: #58a6ff; text-decoration: none; }
-                .endpoints a:hover { text-decoration: underline; }
                 .social-links { margin-top: 20px; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
                 .social-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 6px; font-weight: bold; text-decoration: none; color: white; transition: opacity 0.2s; font-size: 14px; }
                 .telegram { background: #0088cc; }
@@ -44,27 +41,17 @@ def home():
                     <div><b>⚡ System Status</b> : Online & Running ✅</div>
                 </div>
 
-                <div class="endpoints">
-                    <b>📌 Use Endpoints Examples:</b><br><br>
-                    • <a href="/api/lookup?ifsc=SBIN0000794" target="_blank">/api/lookup?ifsc=SBIN0000794</a><br>
-                    • <a href="/api/lookup?aadhaar=123412341234" target="_blank">/api/lookup?aadhaar=123412341234</a><br>
-                    • <a href="/api/lookup?vehicle=HR55AL0051" target="_blank">/api/lookup?vehicle=HR55AL0051</a>
-                </div>
-
                 <div class="social-links">
-                    <!-- MEERU IKKADA MEE TELEGRAM LINK PETTANDI -->
                     <a href="https://t.me/+Xrok4xEFCHc5N2M1" target="_blank" class="social-btn telegram">
                         <i class="fab fa-telegram"></i> Telegram Channel
                     </a>
-                    
-                    <!-- MEERU IKKADA MEE INSTAGRAM LINK PETTANDI -->
-                    <a href="https://www.instagram.com/cyber_india9?dlrf=emx4Mng0M2o1anlp" target="_blank" class="social-btn instagram">
+                    <a href="https://www.instagram.com/cyber_india9?srtk=emx4Mng0M2o1anlp" target="_blank" class="social-btn instagram">
                         <i class="fab fa-instagram"></i> Instagram
                     </a>
                 </div>
 
                 <div class="footer">
-                    👨‍💻 Developer : <b>Priyanshu Gupta ❤️</b>
+                    👨‍💻 Developer : <b>Wolf OSINT ❤️</b>
                 </div>
             </div>
         </body>
