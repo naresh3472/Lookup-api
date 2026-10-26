@@ -32,14 +32,12 @@ def home():
         <body>
             <div class="container">
                 <h2>🐺 WOLF OSINT DASHBOARD 🐺</h2>
-                
                 <div class="status-box">
                     <div><b>🏛️ IFSC Option</b> : Active</div>
                     <div><b>💳 Aadhaar Option</b> : Active</div>
                     <div><b>🚘 Vehicle Option</b> : Active</div>
                     <div><b>⚡ System Status</b> : Online & Running ✅</div>
                 </div>
-
                 <div class="social-links">
                     <a href="https://t.me/+Xrok4xEFCHc5N2M1" target="_blank" class="social-btn telegram">
                         <i class="fab fa-telegram"></i> Telegram Channel
@@ -48,7 +46,6 @@ def home():
                         <i class="fab fa-instagram"></i> Instagram
                     </a>
                 </div>
-
                 <div class="footer">
                     👨‍💻 Developer : <b>Wolf OSINT ❤️</b>
                 </div>
@@ -66,45 +63,60 @@ def lookup_all():
 
     results = {}
 
+    # 1. IFSC API Lookup & Formatting
     if ifsc_code:
         try:
             url = f"{IFSC_API_BASE}{ifsc_code}?format=text"
             res = requests.get(url, timeout=10)
-            results['ifsc'] = {
-                "status": "success" if res.status_code == 200 else "failed",
-                "data": res.text
-            }
+            if res.status_code == 200:
+                results['ifsc'] = {
+                    "status": "success",
+                    "data": res.text
+                }
+            else:
+                results['ifsc'] = {"status": "failed", "message": "Invalid IFSC or API down"}
         except Exception as e:
             results['ifsc'] = {"status": "error", "message": str(e)}
 
+    # 2. Aadhaar API Lookup & Formatting
     if aadhaar_num:
         try:
             params = {"id": aadhaar_num, "format": "card"}
             res = requests.get(AADHAAR_API_BASE, params=params, timeout=15)
-            try:
-                data = res.json()
-            except Exception:
-                data = res.text
-            results['aadhaar'] = {
-                "status": "success" if res.status_code == 200 else "failed",
-                "data": data,
-                "note": "[Aadhaar Redacted for privacy]"
-            }
+            if res.status_code == 200:
+                # Try parsing JSON or text response
+                try:
+                    data = res.json()
+                except Exception:
+                    data = res.text
+                
+                results['aadhaar'] = {
+                    "status": "success",
+                    "data": data,
+                    "note": "[Aadhaar Redacted for privacy]"
+                }
+            else:
+                results['aadhaar'] = {"status": "failed", "message": "Aadhaar fetch failed"}
         except Exception as e:
             results['aadhaar'] = {"status": "error", "message": str(e)}
 
+    # 3. Vehicle API Lookup & Formatting
     if vehicle_num:
         try:
             params = {"api": "ultra_vehicle", "key": "demo", "xr": vehicle_num}
             res = requests.get(VEHICLE_API_BASE, params=params, timeout=15)
-            try:
-                data = res.json()
-            except Exception:
-                data = res.text
-            results['vehicle'] = {
-                "status": "success" if res.status_code == 200 else "failed",
-                "data": data
-            }
+            if res.status_code == 200:
+                try:
+                    raw_data = res.json()
+                except Exception:
+                    raw_data = res.text
+
+                results['vehicle'] = {
+                    "status": "success",
+                    "data": raw_data
+                }
+            else:
+                results['vehicle'] = {"status": "failed", "message": "Vehicle API failed"}
         except Exception as e:
             results['vehicle'] = {"status": "error", "message": str(e)}
 
