@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, Response
+from flask import Flask, jsonify, request, render_template_string, Response
 import requests
 import json
 
@@ -65,7 +65,6 @@ def lookup_all():
 
     results = {}
 
-    # 1. IFSC Lookup
     if ifsc_code:
         try:
             url = f"{IFSC_API_BASE}{ifsc_code}?format=text"
@@ -82,7 +81,6 @@ def lookup_all():
         except Exception as e:
             results['ifsc'] = {"status": "error", "message": str(e)}
 
-    # 2. Aadhaar Lookup
     if aadhaar_num:
         try:
             params = {"id": aadhaar_num, "format": "card"}
@@ -104,7 +102,6 @@ def lookup_all():
         except Exception as e:
             results['aadhaar'] = {"status": "error", "message": str(e)}
 
-    # 3. Vehicle Lookup
     if vehicle_num:
         try:
             params = {"api": "ultra_vehicle", "key": "demo", "xr": vehicle_num}
@@ -125,7 +122,6 @@ def lookup_all():
         except Exception as e:
             results['vehicle'] = {"status": "error", "message": str(e)}
 
-    # Proper indentation to render clean JSON output without messy \n blocks
     formatted_json = json.dumps(results, indent=4, ensure_ascii=False)
     return Response(formatted_json, mimetype='application/json')
 
@@ -139,3 +135,6 @@ def not_found(e):
         "developer": "Priyanshu Gupta ❤️",
         "telegram": "https://t.me/priyanshuexploits"
     }), 404
+
+if __name__ == '__main__':
+    app.run()
