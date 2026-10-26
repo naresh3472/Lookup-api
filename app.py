@@ -8,6 +8,30 @@ IFSC_API_BASE = "https://priyanshuexploits.vercel.app/api/ifsc/"
 AADHAAR_API_BASE = "https://aadhar-xi.vercel.app/api/lookup"
 VEHICLE_API_BASE = "https://api.sarkariallupdates.com/api"
 
+# Custom 404 Error Handler - Wolf OSINT Format
+@app.errorhandler(404)
+def not_found(e):
+    wolf_error_card = (
+        "╔══════════════════════════════════════════╗\n"
+        "       🐺 WOLF OSINT - 404 ERROR 🐺       \n"
+        "╚══════════════════════════════════════════╝\n\n"
+        "❌ Status      : Not Found (404)\n"
+        "⚠️ Message     : The requested URL was not found on the server.\n"
+        "🔍 Action      : Please check your spelling and endpoint URL.\n\n"
+        "════════════════════════════════════════════\n"
+        "👨‍💻 Developer : Nar4sh wolf ❤️\n"
+        "📢 Channel   : https://t.me/+Xrok4xEFCHc5N2M1"
+        "════════════════════════════════════════════"
+    )
+    if request.path.startswith('/api/'):
+        return jsonify({
+            "status": "error",
+            "code": 404,
+            "message": "The requested URL was not found on the server.",
+            "brand": "WOLF OSINT"
+        }), 404
+    return wolf_error_card, 404
+
 @app.route('/api/lookup', methods=['GET'])
 def lookup_all():
     ifsc_code = request.args.get('ifsc')
@@ -71,4 +95,3 @@ def lookup_all():
             results['vehicle'] = {"status": "error", "message": str(e)}
 
     return jsonify(results)
-
