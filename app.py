@@ -8,9 +8,6 @@ IFSC_API_BASE = "https://priyanshuexploits.vercel.app/api/ifsc/"
 AADHAAR_API_BASE = "https://aadhar-xi.vercel.app/api/lookup"
 VEHICLE_API_BASE = "https://api.sarkariallupdates.com/api"
 
-# Secret API Key (Meeru ikkada kavalsina password pettukovochu)
-API_SECRET_KEY = "wolf630"
-
 @app.route('/', methods=['GET'])
 def home():
     html_template = """
@@ -38,9 +35,9 @@ def home():
                 <h2>🐺 WOLF OSINT DASHBOARD 🐺</h2>
                 
                 <div class="status-box">
-                    <div><b>🏛️ IFSC Option</b> : Active (Key Protected)</div>
-                    <div><b>💳 Aadhaar Option</b> : Active (Key Protected)</div>
-                    <div><b>🚘 Vehicle Option</b> : Active (Key Protected)</div>
+                    <div><b>🏛️ IFSC Option</b> : Active</div>
+                    <div><b>💳 Aadhaar Option</b> : Active</div>
+                    <div><b>🚘 Vehicle Option</b> : Active</div>
                     <div><b>⚡ System Status</b> : Online & Running ✅</div>
                 </div>
 
@@ -48,7 +45,7 @@ def home():
                     <a href="https://t.me/+Xrok4xEFCHc5N2M1" target="_blank" class="social-btn telegram">
                         <i class="fab fa-telegram"></i> Telegram Channel
                     </a>
-                    <a href="https://www.instagram.com/cyber_india9?xtok=emx4Mng0M2o1anlp" target="_blank" class="social-btn instagram">
+                    <a href="https://www.instagram.com/cyber_india9?rpxt=emx4Mng0M2o1anlp" target="_blank" class="social-btn instagram">
                         <i class="fab fa-instagram"></i> Instagram
                     </a>
                 </div>
@@ -64,16 +61,6 @@ def home():
 
 @app.route('/api/lookup', methods=['GET'])
 def lookup_all():
-    # Check API Key
-    user_key = request.args.get('key')
-    if not user_key or user_key != API_SECRET_KEY:
-        return jsonify({
-            "status": "error",
-            "code": 401,
-            "message": "Unauthorized! Invalid or missing API Key password.",
-            "brand": "WOLF OSINT"
-        }), 401
-
     ifsc_code = request.args.get('ifsc')
     aadhaar_num = request.args.get('aadhaar')
     vehicle_num = request.args.get('vehicle')
